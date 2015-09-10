@@ -1,5 +1,6 @@
 package ru.evgkit;
 
+import ru.evgkit.model.Song;
 import ru.evgkit.model.SongBook;
 
 import java.io.BufferedReader;
@@ -50,7 +51,9 @@ public class KaraokeMachine {
 
                 switch (choice) {
                     case "add":
-                        //TODO: Add a new song
+                        Song song = promptNewSong();
+                        mSongBook.addSong(song);
+                        System.out.printf("%s added! %n%n", song);
                         break;
 
                     case "quit":
@@ -66,7 +69,18 @@ public class KaraokeMachine {
                 ioe.printStackTrace();
             }
         } while(!choice.equals("quit"));
+    }
 
+    private Song promptNewSong() throws IOException {
+        System.out.print("Enter the artist's name: ");
+        String artist = mReader.readLine();
 
+        System.out.print("Enter the title: ");
+        String title = mReader.readLine();
+
+        System.out.print("Enter the video url: ");
+        String videoUrl = mReader.readLine();
+
+        return new Song(artist, title, videoUrl);
     }
 }
