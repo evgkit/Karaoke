@@ -5,30 +5,30 @@ package ru.evgkit.model;
  * Created by e on 10.09.15.
  */
 public class Song {
-    private String title;
-    private String artist;
-    private String videoUrl;
+    private String mTitle;
+    private String mArtist;
+    private String mVideoUrl;
 
     public Song(String artist, String title, String videoUrl) {
-        this.artist = artist;
-        this.title = title;
-        this.videoUrl = videoUrl;
+        mArtist = artist;
+        mTitle = title;
+        mVideoUrl = videoUrl;
     }
 
     public String getTitle() {
-        return title;
+        return mTitle;
     }
 
     public String getArtist() {
-        return artist;
+        return mArtist;
     }
 
     public String getVideoUrl() {
-        return videoUrl;
+        return mVideoUrl;
     }
 
     @Override
     public String toString() {
-        return String.format("Song: %s by %s", title, artist);
+        return String.format("Song: %s by %s", mTitle, mArtist);
     }
 }

@@ -8,17 +8,17 @@ import java.util.List;
  * Created by e on 10.09.15.
  */
 public class SongBook {
-    private List<Song> songs;
+    private List<Song> mSongs;
 
     public SongBook() {
-        songs = new ArrayList<Song>();
+        mSongs = new ArrayList<>();
     }
 
     public void addSong(Song song) {
-        songs.add(song);
+        mSongs.add(song);
     }
 
     public int getSongsCount() {
-        return songs.size();
+        return mSongs.size();
     }
 }
