@@ -20,7 +20,7 @@ public class KaraokeMachine {
 
     public KaraokeMachine(SongBook songBook) {
         mSongBook = songBook;
-        mSongQueue = new ArrayDeque<Song>();
+        mSongQueue = new ArrayDeque<>();
 
         mReader = new BufferedReader(new InputStreamReader(System.in));
 

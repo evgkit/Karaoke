@@ -10,7 +10,13 @@ public class Karaoke {
     public static void main(String[] args) {
         SongBook songBook = new SongBook();
 
+        String fileName = "songs.txt";
+        songBook.importFrom(fileName);
+
         KaraokeMachine machine = new KaraokeMachine(songBook);
         machine.run();
+
+        System.out.println("Saving book ...");
+        songBook.exportTo(fileName);
     }
 }

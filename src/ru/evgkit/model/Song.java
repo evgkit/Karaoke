@@ -5,9 +5,9 @@ package ru.evgkit.model;
  * Created by e on 10.09.15.
  */
 public class Song {
-    private String mTitle;
-    private String mArtist;
-    private String mVideoUrl;
+    protected String mTitle;
+    protected String mArtist;
+    protected String mVideoUrl;
 
     public Song(String artist, String title, String videoUrl) {
         mArtist = artist;
