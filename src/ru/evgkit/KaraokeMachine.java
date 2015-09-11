@@ -2,6 +2,7 @@ package ru.evgkit;
 
 import ru.evgkit.model.Song;
 import ru.evgkit.model.SongBook;
+import ru.evgkit.model.SongRequest;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -15,7 +16,7 @@ import java.util.*;
 public class KaraokeMachine {
     private SongBook mSongBook;
     private BufferedReader mReader;
-    private Queue<Song> mSongQueue;
+    private Queue<SongRequest> mSongQueue;
     private Map<String, String> mMenu;
 
     public KaraokeMachine(SongBook songBook) {
@@ -50,9 +51,17 @@ public class KaraokeMachine {
                         break;
 
                     case "choose":
+                        String singerName = promptForSingerName();
                         String artist = promptArtist();
                         Song artistSong = promptSongForArtist(artist);
-                        mSongQueue.add(artistSong);
+                        SongRequest songRequest = new SongRequest(singerName, artistSong);
+                        if (mSongQueue.contains(songRequest)) {
+                            System.out.printf("%n%n Whoops! %s is already requested %s! %n%n",
+                                    singerName,
+                                    artistSong);
+                            break;
+                        }
+                        mSongQueue.add(songRequest);
 
                         System.out.printf("You chose: %s %n", artistSong);
                         break;
@@ -72,10 +81,17 @@ public class KaraokeMachine {
         } while(!choice.equals("quit"));
     }
 
+    private String promptForSingerName() throws IOException {
+        System.out.print("Enter the singer's name: ");
+        return mReader.readLine();
+    }
+
     public void playNext() {
-        Song song = mSongQueue.poll();
-        if (null != song) {
-            System.out.printf("%n%n%n Open %s hear %s by %s %n%n%n",
+        SongRequest songRequest = mSongQueue.poll();
+        if (null != songRequest) {
+            Song song = songRequest.getSong();
+            System.out.printf("%n%n%n Ready %s? Open %s hear %s by %s %n%n%n",
+                    songRequest.getSingerName(),
                     song.getVideoUrl(),
                     song.getTitle(),
                     song.getArtist());
