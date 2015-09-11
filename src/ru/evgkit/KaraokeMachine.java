@@ -6,10 +6,7 @@ import ru.evgkit.model.SongBook;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Awesome karaoke machine
@@ -18,15 +15,18 @@ import java.util.Map;
 public class KaraokeMachine {
     private SongBook mSongBook;
     private BufferedReader mReader;
+    private Queue<Song> mSongQueue;
     private Map<String, String> mMenu;
 
     public KaraokeMachine(SongBook songBook) {
         mSongBook = songBook;
+        mSongQueue = new ArrayDeque<Song>();
 
         mReader = new BufferedReader(new InputStreamReader(System.in));
 
         mMenu = new HashMap<>();
         mMenu.put("add", "Add a new song to the song book");
+        mMenu.put("play", "Play next song in the queue");
         mMenu.put("choose", "Choose a song");
         mMenu.put("quit", "Give up. Exit the program");
     }
@@ -41,14 +41,19 @@ public class KaraokeMachine {
                     case "add":
                         Song song = promptNewSong();
                         mSongBook.addSong(song);
+
                         System.out.printf("%s added! %n%n", song);
+                        break;
+
+                    case "play":
+                        playNext();
                         break;
 
                     case "choose":
                         String artist = promptArtist();
                         Song artistSong = promptSongForArtist(artist);
+                        mSongQueue.add(artistSong);
 
-                        // TODO: Add to a song queue
                         System.out.printf("You chose: %s %n", artistSong);
                         break;
 
@@ -67,9 +72,23 @@ public class KaraokeMachine {
         } while(!choice.equals("quit"));
     }
 
+    public void playNext() {
+        Song song = mSongQueue.poll();
+        if (null != song) {
+            System.out.printf("%n%n%n Open %s hear %s by %s %n%n%n",
+                    song.getVideoUrl(),
+                    song.getTitle(),
+                    song.getArtist());
+        } else {
+            System.out.println("Sorry there are no songs in the queue." +
+                    " Use choose from menu to add some");
+        }
+    }
+
     private String promptAction() throws IOException {
-        System.out.printf("There are %d songs available. Your options are: %n",
-                mSongBook.getSongsCount());
+        System.out.printf("There are %d songs available and %d in the queue. Your options are: %n",
+                mSongBook.getSongsCount(),
+                mSongQueue.size());
 
         for (Map.Entry<String, String> option : mMenu.entrySet()) {
             System.out.printf("%s - %s %n",
@@ -125,6 +144,7 @@ public class KaraokeMachine {
             songTitles.add(song.getTitle());
         }
 
+        System.out.printf("Available songs for %s: %n", artist);
         int index = promptForIndex(songTitles);
         return songs.get(index);
     }
