@@ -1,7 +1,6 @@
 package ru.evgkit.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Song helper
@@ -20,5 +19,29 @@ public class SongBook {
 
     public int getSongsCount() {
         return mSongs.size();
+    }
+
+    public Set<String> getArtists() {
+        return byArtist().keySet();
+    }
+
+    public List<Song> getSongsFoArtist(String artistName) {
+        return byArtist().get(artistName);
+    }
+
+    // FIXME: This should be cached!
+    private Map<String, List<Song>> byArtist() {
+        Map<String, List<Song>> byArtist = new HashMap<>();
+
+        for (Song song : mSongs) {
+            List<Song> artistsSongs = byArtist.get(song.getArtist());
+            if (null == artistsSongs) {
+                artistsSongs = new ArrayList<>();
+                byArtist.put(song.getArtist(), artistsSongs);
+            }
+            artistsSongs.add(song);
+        }
+
+        return byArtist;
     }
 }

@@ -6,7 +6,9 @@ import ru.evgkit.model.SongBook;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,22 +27,8 @@ public class KaraokeMachine {
 
         mMenu = new HashMap<>();
         mMenu.put("add", "Add a new song to the song book");
+        mMenu.put("choose", "Choose a song");
         mMenu.put("quit", "Give up. Exit the program");
-    }
-
-    private String promptAction() throws IOException {
-        System.out.printf("There are %d songs available. Your options are: %n",
-                mSongBook.getSongsCount());
-
-        for (Map.Entry<String, String> option : mMenu.entrySet()) {
-            System.out.printf("%s - %s %n",
-                    option.getKey(),
-                    option.getValue());
-        }
-
-        System.out.print("What do you want to do: ");
-        String choice = mReader.readLine();
-        return choice.trim().toLowerCase();
     }
 
     public void run() {
@@ -54,6 +42,14 @@ public class KaraokeMachine {
                         Song song = promptNewSong();
                         mSongBook.addSong(song);
                         System.out.printf("%s added! %n%n", song);
+                        break;
+
+                    case "choose":
+                        String artist = promptArtist();
+                        Song artistSong = promptSongForArtist(artist);
+
+                        // TODO: Add to a song queue
+                        System.out.printf("You chose: %s %n", artistSong);
                         break;
 
                     case "quit":
@@ -71,6 +67,21 @@ public class KaraokeMachine {
         } while(!choice.equals("quit"));
     }
 
+    private String promptAction() throws IOException {
+        System.out.printf("There are %d songs available. Your options are: %n",
+                mSongBook.getSongsCount());
+
+        for (Map.Entry<String, String> option : mMenu.entrySet()) {
+            System.out.printf("%s - %s %n",
+                    option.getKey(),
+                    option.getValue());
+        }
+
+        System.out.print("What do you want to do: ");
+        String choice = mReader.readLine();
+        return choice.trim().toLowerCase();
+    }
+
     private Song promptNewSong() throws IOException {
         System.out.print("Enter the artist's name: ");
         String artist = mReader.readLine();
@@ -82,5 +93,39 @@ public class KaraokeMachine {
         String videoUrl = mReader.readLine();
 
         return new Song(artist, title, videoUrl);
+    }
+
+    private int promptForIndex(List<String> options) throws IOException {
+        int counter = 1;
+
+        for (String option : options) {
+            System.out.printf("%d.) %s %n", counter++, option);
+        }
+
+        System.out.print("Your choice: ");
+        int choice = Integer.parseInt(mReader.readLine().trim());
+
+        return --choice;
+    }
+
+    private String promptArtist() throws IOException {
+        List<String> artists = new ArrayList<>(mSongBook.getArtists());
+
+        System.out.println("Available artists:");
+        int index = promptForIndex(artists);
+
+        return artists.get(index);
+    }
+
+    private Song promptSongForArtist(String artist) throws IOException {
+        List<Song> songs = mSongBook.getSongsFoArtist(artist);
+        List<String> songTitles = new ArrayList<>();
+
+        for (Song song : songs) {
+            songTitles.add(song.getTitle());
+        }
+
+        int index = promptForIndex(songTitles);
+        return songs.get(index);
     }
 }
